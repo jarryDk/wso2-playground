@@ -1,0 +1,67 @@
+= WSO2 API Manager in containers
+
+== Requeriments
+
+.build carbon-apimgt
+[source,bash]
+----
+mkdir -p $HOME/git
+cd $HOME/git
+git clone git@github.com:wso2/carbon-apimgt.git
+cd carbon-apimgt
+mvn clean install
+----
+
+.build product-apim
+[source,bash]
+----
+mkdir -p $HOME/git
+cd $HOME/git
+git clone git@github.com:wso2/product-apim.git
+cd product-apim
+mvn clean install
+----
+
+== Postgres
+
+.Start Postgres for apim_db
+[source,bash]
+----
+./start_postgres_for_wso2_apim.sh
+----
+
+.Start Postgres for shared_db
+[source,bash]
+----
+./start_postgres_for_wso2_shared.sh
+----
+
+.Add schema to apim_db (container)
+[source,bash]
+----
+source ./config.conf
+APIM_HOME=/opt/wso2/wso2am-4.2.0
+psql -U apimadmin -d apim_db -h localhost -p $POSTGRES_WSO2_APIM_PORT -f $APIM_HOME/dbscripts/apimgt/postgresql.sql  -W
+----
+
+.Add schema to shared_db (container)
+[source,bash]
+----
+source ./config.conf
+APIM_HOME=/opt/wso2/wso2am-4.2.0
+psql -U sharedadmin -d shared_db -h localhost -p $POSTGRES_WSO2_SHARED_PORT -f $APIM_HOME/dbscripts/postgresql.sql -W
+----
+
+== WSO2 API Manager
+
+.Build WSO2 APIM images
+[source,bash]
+----
+./build_wso2_apim_images.sh
+----
+
+.Start WSO2 APIM container
+[source,bash]
+----
+./start_wso2_apim.sh
+----

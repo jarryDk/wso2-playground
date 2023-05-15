@@ -1,0 +1,124 @@
+= WSO2 API Manager
+
+Start by reading https://apim.docs.wso2.com/en/latest/reference/working-with-the-source-code/[Working with the Source Code] it will link
+to https://wso2.github.io/github-repositories.html[Overview of the WSO2 repositories] and https://wso2.github.io/using-maven.html[Using Maven to Build WSO2 Products].
+
+You might be tempted to use `mvn clean install -Dmaven.test.skip=true`, but at least one time go for `mvn clean install` to execute all the tests.
+
+You can find the new binary pack (ZIP file) in the `<PRODUCT_REPOSITORY_HOME>/modules/distribution/target` directory, which you can use to distribute the product if needed.
+
+TIP: Set the environment variable MAVEN_OPTS="-Xmx2048M -XX:MaxPermSize=1024m" to avoid the Maven OutOfMemoryError. Use JDK 11 to build.
+
+.build carbon-apimgt
+[source,bash]
+----
+mkdir -p $HOME/git
+cd $HOME/git
+git clone git@github.com:wso2/carbon-apimgt.git
+cd carbon-apimgt
+mvn clean install
+----
+
+.build product-apim
+[source,bash]
+----
+mkdir -p $HOME/git
+cd $HOME/git
+git clone git@github.com:wso2/product-apim.git
+cd product-apim
+mvn clean install
+----
+
+TIP: Apache Ant is required to compile and run the sample clients for `product-apim`. Apache Ant 1.7.0 version is recommended
+
+== WSO2 API Manager endpoints
+
+- https://localhost:9443/publisher
+- https://localhost:9443/devportal
+- https://localhost:9443/carbon
+- https://localhost:9443/admin
+
+
+== Install and config
+
+- https://apim.docs.wso2.com/en/latest/administer/key-managers/configure-keycloak-connector/[Configure Keycloak as a Key Manager]
+- https://apim.docs.wso2.com/en/latest/install-and-setup/install/installing-the-product/installing-api-m-as-a-linux-service/[Running API Manager as a Linux Service]
+- https://apim.docs.wso2.com/en/latest/install-and-setup/setup/setting-up-databases/overview/[Working with Databases]
+- https://apim.docs.wso2.com/en/latest/install-and-setup/setup/setting-up-databases/changing-default-databases/changing-to-postgresql/[Changing to PostgreSQL]
+
+=== Changing to PostgreSQL
+
+.Create the AM database
+[source,sql]
+----
+CREATE USER apimadmin WITH PASSWORD 'playground';
+CREATE DATABASE apim_db OWNER apimadmin;
+grant all privileges on database apim_db to apimadmin;
+----
+
+.Add schema to apim_db
+[source,bash]
+----
+APIM_HOME=/opt/wso2/wso2am-4.2.0
+psql -U apimadmin -d apim_db -f $APIM_HOME/dbscripts/apimgt/postgresql.sql  -W
+----
+
+.Create the Shared database
+[source,sql]
+----
+CREATE USER sharedadmin WITH PASSWORD 'playground';
+CREATE DATABASE shared_db OWNER sharedadmin;
+grant all privileges on database shared_db to sharedadmin;
+----
+
+.Add schema to shared_db
+[source,bash]
+----
+APIM_HOME=/opt/wso2/wso2am-4.2.0
+psql -U sharedadmin -d shared_db -f $APIM_HOME/dbscripts/postgresql.sql -W
+----
+
+.Download postgresql and add it to ../lib/
+[source,bash]
+----
+APIM_HOME=/opt/wso2/wso2am-4.2.0
+curl -o $APIM_HOME/repository/components/lib/postgresql-42.6.0.jar https://jdbc.postgresql.org/download/postgresql-42.6.0.jar
+----
+
+.Overwrite <API-M_HOME>/repository/conf/deployment.toml
+[source,bash]
+----
+APIM_HOME=/opt/wso2/wso2am-4.2.0
+cp -vf deployment.toml $APIM_HOME/repository/conf/deployment.toml
+----
+
+Alternative - Open the <API-M_HOME>/repository/conf/deployment.toml configuration file and locate the [database.shared_db] and [database.apim_db] configuration elements.
+
+----
+[database.apim_db]
+type = "postgre"
+url = "jdbc:postgresql://localhost:5432/apim_db"
+username = "apimadmin"
+password = "playground"
+driver = "org.postgresql.Driver"
+validationQuery = "SELECT 1"
+
+[database.shared_db]
+type = "postgre"
+url = "jdbc:postgresql://localhost:5432/shared_db"
+username = "sharedadmin"
+password = "playground"
+driver = "org.postgresql.Driver"
+validationQuery = "SELECT 1"
+----
+
+== Links
+
+- https://apim.docs.wso2.com/en/latest/[API Manager Documentation]
+- https://apim.docs.wso2.com/en/latest/reference/working-with-the-source-code/
+- https://wso2.github.io/github-repositories.html
+- https://wso2.github.io/using-maven.html
+- https://github.com/wso2/carbon-apimgt
+- https://github.com/wso2/product-apim
+- https://github.com/wso2/product-apim/releases/tag/v4.2.0
+
