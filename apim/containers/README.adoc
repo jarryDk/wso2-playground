@@ -52,6 +52,51 @@ APIM_HOME=/opt/wso2/wso2am-4.2.0
 psql -U sharedadmin -d shared_db -h localhost -p $POSTGRES_WSO2_SHARED_PORT -f $APIM_HOME/dbscripts/postgresql.sql -W
 ----
 
+== Java keystore from PEM files
+
+- https://apim.docs.wso2.com/en/latest/install-and-setup/setup/security/configuring-keystores/configuring-keystores-in-wso2-api-manager/[Configuring Keystores in WSO2 API Manager]
+
+.Export certificates to the PKCS12/PFX format
+[source,bash]
+----
+openssl pkcs12 \
+	-export \
+	-in fullchain.pem \
+	-inkey privkey.pem \
+	-name "api.jarry.dk" \
+	-out api.jarry.dk.pfx \
+	-password pass:playground
+----
+
+TIP: You might like not to take the password in plan text.
+
+.Convert the PKCS12/PFX formatted keystore to a Java keystore (JKS)
+[source,bash]
+----
+keytool \
+	-importkeystore \
+	-srckeystore api.jarry.dk.pfx \
+	-srcstoretype pkcs12 \
+	-destkeystore api.jarry.dk.jks \
+	-deststoretype JKS \
+	-storepass playground \
+	-srcstorepass playground
+----
+
+.Convert the PKCS12/PFX formatted keystore to a Java keystore (pkcs12)
+[source,bash]
+----
+keytool \
+	-importkeystore \
+	-srckeystore api.jarry.dk.jks \
+	-destkeystore api.jarry.dk.jks \
+	-deststoretype pkcs12 \
+	-storepass playground \
+	-srcstorepass playground
+----
+
+TIP: You might like not to take the password in plan text.
+
 == WSO2 API Manager
 
 .Build WSO2 APIM images

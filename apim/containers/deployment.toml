@@ -1,4 +1,5 @@
 [server]
+# hostname = "api.jarry.dk"
 hostname = "localhost"
 #offset=0
 base_path = "${carbon.protocol}://${carbon.host}:${carbon.management.port}"
@@ -30,6 +31,14 @@ username = "sharedadmin"
 password = "playground"
 driver = "org.postgresql.Driver"
 validationQuery = "SELECT 1"
+
+# Change by jarryDk
+#[keystore.tls]
+#file_name =  "api.jarry.dk.jks"
+#type =  "JKS"
+#password =  "playground"
+#alias =  "api.jarry.dk"
+#key_password =  "playground"
 
 [keystore.tls]
 file_name =  "wso2carbon.jks"
@@ -135,8 +144,8 @@ enable_apikey_subscription_validation = true
 #enable_user_claims = true
 #claims_extractor_impl = "org.wso2.carbon.apimgt.impl.token.ExtendedDefaultClaimsRetriever"
 
-#[apim.oauth_config]
-#enable_outbound_auth_header = false
+[apim.oauth_config]
+enable_outbound_auth_header = true
 #auth_header = "Authorization"
 #revoke_endpoint = "https://localhost:${https.nio.port}/revoke"
 #enable_token_encryption = false

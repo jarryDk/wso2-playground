@@ -1,4 +1,5 @@
 [server]
+# hostname = "<wso2_host_dns>"
 hostname = "localhost"
 #offset=0
 base_path = "${carbon.protocol}://${carbon.host}:${carbon.management.port}"
@@ -30,6 +31,14 @@ username = "<shared_username>"
 password = "<shared_password>"
 driver = "org.postgresql.Driver"
 validationQuery = "SELECT 1"
+
+# Change by jarryDk
+#[keystore.tls]
+#file_name =  "<keystore_tls_file_name>"
+#type =  "JKS"
+#password =  "<keystore_tls_password>"
+#alias =  "<keystore_tls_alias>"
+#key_password =  "<keystore_key_password>"
 
 [keystore.tls]
 file_name =  "wso2carbon.jks"
@@ -135,8 +144,8 @@ enable_apikey_subscription_validation = true
 #enable_user_claims = true
 #claims_extractor_impl = "org.wso2.carbon.apimgt.impl.token.ExtendedDefaultClaimsRetriever"
 
-#[apim.oauth_config]
-#enable_outbound_auth_header = false
+[apim.oauth_config]
+enable_outbound_auth_header = true
 #auth_header = "Authorization"
 #revoke_endpoint = "https://localhost:${https.nio.port}/revoke"
 #enable_token_encryption = false

@@ -1,0 +1,17 @@
+= WSO2 Playground
+
+
+== OpenID Connect
+
+We need to have some background to undestand the security part of an API Manager.
+
+.From the Keycloak documentartion
+----
+There are really two types of use cases when using OIDC. The first is an application that asks the Keycloak server to authenticate a user for them. After a successful login, the application will receive an identity token and an access token. The identity token contains information about the user such as username, email, and other profile information. The access token is digitally signed by the realm and contains access information (like user role mappings) that the application can use to determine what resources the user is allowed to access on the application.
+----
+
+Source : https://www.keycloak.org/docs/latest/securing_apps/index.html#openid-connect-2
+
+== Claims & Scopes
+
+Source : https://curity.io/resources/claims/
